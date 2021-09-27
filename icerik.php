@@ -38,7 +38,7 @@ foreach ($sorgu2 as $item) {
     </noscript>
     <div class="container">
         <div>
-            <?php if (!empty($aranan) || $aranan === "") { ?>
+            <?php if (!empty($aranan) || $aranan !== "") { ?>
                 <span>Aranan Kelime: <?php echo "<b>" . $aranan . "</b>"; ?></span><br>
                 <span>Aranan sözcük vurgulanmıştır.</span><br>
                 <a href="./icerik.php?git=<?php echo $git; ?>"><input type="button" class="btn-small" value="Vurgulamayı Kaldır" /></a>
