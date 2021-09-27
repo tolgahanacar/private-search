@@ -1,6 +1,5 @@
 <?php
-require_once './connect.php';
-require_once './functions.php';
+require_once './root.php';
 $git = Security(DeleteNumbers($_GET['git']));
 $aranan = Security($_GET['aranan']);
 
@@ -60,7 +59,7 @@ foreach ($sorgu2 as $item) {
                     <div class="card" style="width: 20rem;">
                         <div class="card-body">
                             <h5 class="card-title"><?php echo $item2->title; ?></h5>
-                            <p><?php echo substr($item2->content, 0, 150,) . " " . "<a href='icerik.php?git=$item2->id'>Devamını Oku...</a>"; ?></p>
+                            <p><?php echo substr($item2->content, 0, 150,) . " " . "<a href='icerik.php?git=$item2->id&aranan=$aranan'>Devamını Oku...</a>"; ?></p>
                         </div>
                     </div>
             <?php }
