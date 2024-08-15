@@ -17,11 +17,11 @@ require_once './root.php';
     <div class="container">
         <form action="" method="GET">
             <div>
-                <label for="Ara">Ara</label><br>
-                <input type="text" name="ara" id="ara" placeholder="Aranacak kelime...">
+                <label for="ara">Search</label><br>
+                <input type="text" name="ara" id="ara" placeholder="Search keyword..." value="<?php echo htmlspecialchars($_GET['ara'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
             </div>
             <div>
-                <input type="submit" value="Gonder" name="gonder">
+                <input type="submit" value="Search" name="gonder">
             </div>
         </form>
     </div>
@@ -31,35 +31,35 @@ require_once './root.php';
 
 <?php
 if (isset($_GET['gonder'])) {
-    $ara = $_GET['ara'];
+    $ara = trim($_GET['ara']);
 
-    $sorgu = $db->prepare("SELECT * FROM posts WHERE title LIKE '%$ara%' LIMIT 10");
-    $sorgu->execute();
-    $sorgu2 = $sorgu->fetchAll(PDO::FETCH_OBJ);
-    $sorgusay = $sorgu->rowCount();
-    if ($sorgusay > 0 && !empty($ara)) {
-        foreach ($sorgu2 as $item) { ?>
-            <div class="container">
-                <h2><a href="icerik.php?git=<?php echo $item->id; ?>&aranan=<?php echo $ara; ?>"> <?php echo $item->title; ?> </a></h2>
-                <span><?php echo $item->content; ?></span>
-            </div>
-<?php }
-    }elseif(empty($ara) || $ara===""){
-        echo "<div class=container>";
-        echo '<div class="row flex-spaces">
-        <input class="alert-state" id="alert-1" type="checkbox">
-        <div class="alert alert-secondary dismissible">
-          Lütfen en az 1 harf giriniz.
-          <label class="btn-close" for="alert-1">X</label>
-        </div>';
-        echo "</div>";
-    }
-    
-    else{
-        echo '<div class=container>';
-        echo '<div class="alert alert-danger">Aramanıza uygun sonuç bulunamadı!</div>';
+    if (!empty($ara)) {
+        $stmt = $db->prepare("SELECT * FROM posts WHERE title LIKE :searchTerm LIMIT 10");
+        $stmt->execute(['searchTerm' => "%$ara%"]);
+        $results = $stmt->fetchAll(PDO::FETCH_OBJ);
+
+        if (count($results) > 0) {
+            foreach ($results as $item) { ?>
+                <div class="container">
+                    <h2><a href="icerik.php?git=<?php echo htmlspecialchars($item->id, ENT_QUOTES, 'UTF-8'); ?>&aranan=<?php echo htmlspecialchars($ara, ENT_QUOTES, 'UTF-8'); ?>"><?php echo htmlspecialchars($item->title, ENT_QUOTES, 'UTF-8'); ?></a></h2>
+                    <span><?php echo htmlspecialchars($item->content, ENT_QUOTES, 'UTF-8'); ?></span>
+                </div>
+            <?php }
+        } else {
+            echo '<div class="container">';
+            echo '<div class="alert alert-danger">No results found for your search!</div>';
+            echo '</div>';
+        }
+    } else {
+        echo '<div class="container">';
+        echo '<div class="row flex-spaces">';
+        echo '<input class="alert-state" id="alert-1" type="checkbox">';
+        echo '<div class="alert alert-secondary dismissible">';
+        echo 'Please enter at least one character.';
+        echo '<label class="btn-close" for="alert-1">X</label>';
+        echo '</div>';
+        echo '</div>';
         echo '</div>';
     }
 }
-
 ?>
