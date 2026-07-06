@@ -1,1 +1,1 @@
-GET http://localhost/new/icerik.php?git=1&aranan=php
+GET http://localhost/new/detail.php?git=1&aranan=php
